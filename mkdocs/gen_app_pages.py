@@ -13,6 +13,8 @@ allowed_tags = ['AI/Machine Learning', 'Monitoring', 'Networking', 'Security',
 allowed_support_types = ['Enterprise', 'Community']
 summary_chars_limit = 90
 
+VERSION = os.environ.get('VERSION', 'v0.2.0')
+
 def changed(file, content):
     if os.path.exists(file):
         with open(file, 'r', encoding='utf-8') as f:
@@ -98,6 +100,7 @@ def generate_apps():
                 metadata = yaml.safe_load(f)
                 validate_metadata(data_file, metadata)
                 ensure_big_logo(metadata)
+                metadata['version'] = VERSION
 
             # Render the template with metadata
             rendered_md = template.render(**metadata)
