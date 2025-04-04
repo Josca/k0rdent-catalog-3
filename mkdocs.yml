@@ -2,7 +2,6 @@ site_name: k0rdent Catalog
 site_description: Documentation for k0rdent.
 repo_name: GitHub
 site_author: Mirantis, Inc.
-site_url: https://josca.github.io/k0rdent-catalog/
 repo_url: https://github.com/k0rdent/catalog
 
 copyright:
