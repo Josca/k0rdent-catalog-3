@@ -338,7 +338,7 @@ body:has(.homepage) .back-to-catalog{
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   }
   .md-header__button.md-logo img{
-    max-width: 250px;
+    max-width: 170px;
   }
   .md-header .md-header__title .md-ellipsis {
     letter-spacing: 1.4;
