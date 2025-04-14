@@ -1,8 +1,8 @@
 apiVersion: v2
-name: gitlab
+name: example
 type: application
 version: 8.9.2
 dependencies:
   - name: gitlab
     version: 8.9.2
-    repository: https://charts.gitlab.io/
+    repository: oci://ghcr.io/k0rdent/catalog/charts
