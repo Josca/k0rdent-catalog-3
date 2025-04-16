@@ -28,12 +28,14 @@ jobs:
         env:
           GH_OWNER: ${{ github.repository_owner }}
           DRY_RUN: ${{ github.event.inputs.dry-run }}
+          PKG_PREFIX: "${{ github.event.repository.name }}/"
         run: |
           echo "Starting cleanup for owner: $GH_OWNER"
           echo "Dry run mode: $DRY_RUN"
 
           # Get all container packages for user/org
-          gh api "users/$GH_OWNER/packages?package_type=container" --paginate > packages.json
+          gh api "users/$GH_OWNER/packages?package_type=container" --paginate > packages-all.json
+          jq --arg prefix "$PKG_PREFIX" '[.[] | select(.name | startswith($prefix))]' packages-all.json > packages.json
 
           PACKAGE_COUNT=$(jq length packages.json)
           echo "Found $PACKAGE_COUNT container packages"
