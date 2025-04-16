@@ -26,15 +26,22 @@ jobs:
 
       - name: List and optionally delete untagged versions
         env:
-          GH_OWNER: ${{ github.repository_owner }}
+          REPO_OWNER: ${{ github.repository_owner }}
           DRY_RUN: ${{ github.event.inputs.dry-run }}
           PKG_PREFIX: "${{ github.event.repository.name }}/"
         run: |
-          echo "Starting cleanup for owner: $GH_OWNER"
+          echo "Starting cleanup for owner: $REPO_OWNER"
           echo "Dry run mode: $DRY_RUN"
 
+          if gh api "users/$REPO_OWNER" &>/dev/null; then
+            API_BASE="users/$REPO_OWNER"
+          else
+            API_BASE="orgs/$REPO_OWNER"
+          fi
+          echo "Using API base: $API_BASE"
+
           # Get all container packages for user/org
-          gh api "users/$GH_OWNER/packages?package_type=container" --paginate > packages-all.json
+          gh api "$API_BASE/packages?package_type=container" --paginate > packages-all.json
           jq --arg prefix "$PKG_PREFIX" '[.[] | select(.name | startswith($prefix))]' packages-all.json > packages.json
 
           PACKAGE_COUNT=$(jq length packages.json)
@@ -44,30 +51,28 @@ jobs:
             PACKAGE_NAME=$(jq -r ".[$i].name" packages.json)
             echo ""
             echo "🔍 Processing package: $PACKAGE_NAME"
-            ENCODED_PACKAGE_NAME=$(jq -rn --arg p "$PACKAGE_NAME" '$p|@uri')
+            encoded_pkg_name=$(jq -rn --arg p "$PACKAGE_NAME" '$p|@uri')
 
             # Get all versions of the package
-            gh api "users/$GH_OWNER/packages/container/$ENCODED_PACKAGE_NAME/versions" --paginate > versions.json
+            gh api "$API_BASE/packages/container/${encoded_pkg_name}/versions" --paginate > versions.json
 
             # Get untagged version IDs
-            UNTAGGED_IDS=$(jq -r '.[] | select(.metadata.container.tags == []) | .id' versions.json)
-            COUNT=$(echo "$UNTAGGED_IDS" | wc -l)
-
-            if [ -z "$UNTAGGED_IDS" ]; then
+            untagged_ids=$(jq -r '.[] | select(.metadata.container.tags == []) | .id' versions.json)
+            count=$(echo "$untagged_ids" | wc -l)
+            if [ -z "$untagged_ids" ]; then
               echo "✅ No untagged versions found."
               continue
             fi
-
-            echo "⚠️ Found $COUNT untagged version(s)."
+            echo "⚠️ Found $count untagged version(s)."
 
             if [ "$DRY_RUN" = "true" ]; then
               echo "📝 Would delete the following versions:"
-              echo "$UNTAGGED_IDS"
+              echo "$untagged_ids"
             else
-              echo "🗑️ Deleting $COUNT untagged version(s)..."
-              echo "$UNTAGGED_IDS" | while read version_id; do
+              echo "🗑️ Deleting $count untagged version(s)..."
+              echo "$untagged_ids" | while read version_id; do
                 echo "Deleting version $version_id..."
-                gh api --method DELETE "users/$GH_OWNER/packages/container/$ENCODED_PACKAGE_NAME/versions/$version_id"
+                gh api --method DELETE "$API_BASE/packages/container/${encoded_pkg_name}/versions/$version_id"
               done
             fi
           done
