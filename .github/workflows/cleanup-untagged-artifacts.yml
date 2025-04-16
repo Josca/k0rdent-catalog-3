@@ -50,7 +50,7 @@ jobs:
             gh api "users/$GH_OWNER/packages/container/$ENCODED_PACKAGE_NAME/versions" --paginate > versions.json
 
             # Get untagged version IDs
-            UNTAGGED_IDS=$(jq -r '.[] | select(.metadata.container.tags == null) | .id' versions.json)
+            UNTAGGED_IDS=$(jq -r '.[] | select(.metadata.container.tags == []) | .id' versions.json)
             COUNT=$(echo "$UNTAGGED_IDS" | wc -l)
 
             if [ -z "$UNTAGGED_IDS" ]; then
