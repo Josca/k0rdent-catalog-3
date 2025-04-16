@@ -34,7 +34,6 @@ jobs:
 
           # Get all container packages for user/org
           gh api "users/$GH_OWNER/packages?package_type=container" --paginate > packages.json
-          # TODO gh api "orgs/$GH_OWNER/packages?package_type=container" --paginate > packages.json
 
           PACKAGE_COUNT=$(jq length packages.json)
           echo "Found $PACKAGE_COUNT container packages"
@@ -43,10 +42,10 @@ jobs:
             PACKAGE_NAME=$(jq -r ".[$i].name" packages.json)
             echo ""
             echo "🔍 Processing package: $PACKAGE_NAME"
+            ENCODED_PACKAGE_NAME=$(jq -rn --arg p "$PACKAGE_NAME" '$p|@uri')
 
             # Get all versions of the package
-            gh api "users/$GH_OWNER/packages/container/$PACKAGE_NAME/versions" --paginate > versions.json
-            # TODO  gh api "orgs/$GH_OWNER/packages/container/$PACKAGE_NAME/versions" --paginate > versions.json
+            gh api "users/$GH_OWNER/packages/container/$ENCODED_PACKAGE_NAME/versions" --paginate > versions.json
 
             # Get untagged version IDs
             UNTAGGED_IDS=$(jq -r '.[] | select(.metadata.container.tags == null) | .id' versions.json)
@@ -66,8 +65,7 @@ jobs:
               echo "🗑️ Deleting $COUNT untagged version(s)..."
               echo "$UNTAGGED_IDS" | while read version_id; do
                 echo "Deleting version $version_id..."
-                gh api --method DELETE "users/$GH_OWNER/packages/container/$PACKAGE_NAME/versions/$version_id"
-                # TODO gh api --method DELETE "orgs/$GH_OWNER/packages/container/$PACKAGE_NAME/versions/$version_id"
+                gh api --method DELETE "users/$GH_OWNER/packages/container/$ENCODED_PACKAGE_NAME/versions/$version_id"
               done
             fi
           done
