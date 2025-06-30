@@ -16,6 +16,7 @@ install_code: |
     {% else %}
     helm install dex oci://ghcr.io/k0rdent/catalog/charts/dex-service-template \
     --version 0.19.1 -n kcm-system
+    {{ kgst_install('', '') }}
     {% endif %}
     ~~~
 verify_code: |

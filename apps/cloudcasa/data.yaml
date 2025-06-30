@@ -12,6 +12,7 @@ install_code: |
     ~~~bash
     helm install cloudcasa oci://ghcr.io/k0rdent/catalog/charts/cloudcasa-service-template \
       --version 3.4.4 -n kcm-system
+    {{ kgst_install('', '') }}
     ~~~
 verify_code: |
     ~~~bash

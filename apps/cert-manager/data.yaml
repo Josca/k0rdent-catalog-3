@@ -14,8 +14,7 @@ install_code: |
     # k0rdent includes the template for Cert-manager 1.16.2 out of the box
     # It's also possible to install a newer version:
     {% endif %}
-    helm install cert-manager oci://ghcr.io/k0rdent/catalog/charts/cert-manager-service-template \
-      --version 1.17.2 -n kcm-system
+    {{ kgst_install('cert-manager', '1.17.2') }}
     ~~~
 verify_code: |
     ~~~bash

@@ -14,6 +14,7 @@ install_code: |
     ~~~bash
     helm install external-dns oci://ghcr.io/k0rdent/catalog/charts/external-dns-service-template \
       --version 1.15.1 -n kcm-system
+    {{ kgst_install('', '') }}
     ~~~
 verify_code: |
     ~~~bash

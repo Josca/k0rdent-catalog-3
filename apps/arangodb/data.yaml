@@ -14,8 +14,7 @@ description: |
 support_link: https://arangodb.com/contact/
 install_code: |
     ~~~bash
-    helm install kube-arangodb oci://ghcr.io/k0rdent/catalog/charts/kube-arangodb-service-template \
-      --version 1.2.46 -n kcm-system
+    {{ kgst_install('kube-arangodb', '1.2.46') }}
     ~~~
 verify_code: |
     ~~~bash

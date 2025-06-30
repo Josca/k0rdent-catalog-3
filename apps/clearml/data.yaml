@@ -24,6 +24,7 @@ install_code: |
     ~~~bash
     helm install clearml-serving oci://ghcr.io/k0rdent/catalog/charts/clearml-serving-service-template \
       --version 1.5.10 -n kcm-system
+    {{ kgst_install('', '') }}
     ~~~
 verify_code: |
     ~~~bash

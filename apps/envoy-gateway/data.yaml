@@ -12,6 +12,7 @@ install_code: |
   ~~~bash
   helm install envoy-gateway oci://ghcr.io/k0rdent/catalog/charts/envoy-gateway-service-template \
     --version 1.3.2 -n kcm-system
+  {{ kgst_install('', '') }}
   ~~~
 verify_code: |
   ~~~bash

@@ -19,10 +19,8 @@ description: |
 support_link: https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/kubernetes-helm.html
 install_code: |
     ~~~bash
-    helm install amd-gpu-operator oci://ghcr.io/k0rdent/catalog/charts/amd-gpu-operator-service-template \
-      --version v1.2.2 -n kcm-system
-    helm install cert-manager oci://ghcr.io/k0rdent/catalog/charts/cert-manager-service-template \
-      --version 1.17.2 -n kcm-system
+    {{ kgst_install('amd-gpu-operator', 'v1.2.2') }}
+    {{ kgst_install('cert-manager', '1.17.2') }}
     ~~~
 verify_code: |
     ~~~bash

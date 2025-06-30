@@ -24,6 +24,8 @@ install_code: |
     --version 1.14.4 -n kcm-system
   helm install dapr-dashboard oci://ghcr.io/k0rdent/catalog/charts/dapr-dashboard-service-template \
     --version 0.15.0 -n kcm-system
+  {{ kgst_install('', '') }}
+  {{ kgst_install('', '') }}
   ~~~
 verify_code: |
   ~~~bash
