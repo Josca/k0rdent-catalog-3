@@ -175,6 +175,10 @@ def ensure_big_logo(metadata: dict):
         metadata['logo_big'] = metadata['logo']
 
 
+def kgst_install(chart_name: str, chart_version: str):
+    return f"helm install {chart_name} oci://ghcr.io/k0rdent/catalog/charts/kgst --set \"chart={chart_name}:{chart_version}\" -n kcm-system"
+
+
 def generate_apps():
     apps_dir = 'apps'
     dst_dir = 'mkdocs'
@@ -184,6 +188,8 @@ def generate_apps():
         version=VERSION
     )
     base_metadata.update(version2template_names(VERSION))
+    env = jinja2.Environment()
+    env.globals['kgst_install'] = kgst_install
 
     # Read template
     with open(template_path, 'r', encoding='utf-8') as f:
@@ -197,7 +203,7 @@ def generate_apps():
         metadata = dict()
         if os.path.isdir(app_path) and os.path.exists(data_file):
             with open(data_file, 'r', encoding='utf-8') as f:
-                metadata_tpl = jinja2.Template(f.read())
+                metadata_tpl = env.from_string(f.read())
                 metadata_str = metadata_tpl.render(**base_metadata)
                 metadata = yaml.safe_load(metadata_str)
                 validate_metadata(data_file, metadata)
