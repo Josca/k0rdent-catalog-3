@@ -21,8 +21,8 @@ install_code: |
     # This version is out-of-date and vulnerable (CVE-2025-1974).
     # It's also possible to install a newer version:
     {% endif %}
-    helm install ingress-nginx oci://ghcr.io/k0rdent/catalog/charts/ingress-nginx-service-template \
-      --version 4.11.5 -n kcm-system
+    helm install ingress-nginx oci://ghcr.io/k0rdent/catalog/charts/kgst \
+        --set "chart=ingress-nginx:4.11.5" -n kcm-system
     ~~~
 verify_code: |
     ~~~bash
